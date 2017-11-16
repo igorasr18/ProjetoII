@@ -15,14 +15,11 @@ public class MySQLAccess {
     private ResultSet resultSet = null;
     
     public void createConnection() throws ClassNotFoundException {
-    	// This will load the MySQL driver, each DB has its own driver
         Class.forName("com.mysql.jdbc.Driver");
-        // Setup the connection with the DB
         try {
 			connect = DriverManager
 			        .getConnection("jdbc:mysql://localhost/testecitys?"
 			                + "user=root&password=root&useSSL=false");
-			// Statements allow to issue SQL queries to the database
             statement = connect.createStatement();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -54,7 +51,6 @@ public class MySQLAccess {
     public void readDataBase() throws Exception {
         try {
         	createConnection();
-            // Result set get the result of the SQL query
             resultSet = statement.executeQuery("select * from citys");
             writeResultSet(resultSet);
 
@@ -68,14 +64,9 @@ public class MySQLAccess {
     public void selectJoin() throws Exception {
         try {
         	createConnection();
-            // Result set get the result of the SQL query
             resultSet = statement.executeQuery("SELECT c.ID, City, pop, state, loc1, loc2 FROM citys c left join localizations l on c.ID = l.ID ");
             
-            while (resultSet.next()) {
-                // It is possible to get the columns via name
-                // also possible to get the columns via the column number
-                // which starts at 1
-                // e.g. resultSet.getSTring(2);
+             	while (resultSet.next()) {
                 String ID = resultSet.getString("ID");
                 String City = resultSet.getString("City");
                 String pop = resultSet.getString("pop");
@@ -90,7 +81,7 @@ public class MySQLAccess {
                 System.out.print("loc2: " + loc2);
                 System.out.println();
             }
-
+            
         } catch (Exception e) {
             throw e;
         } finally {
@@ -99,12 +90,7 @@ public class MySQLAccess {
     }
 
     private void writeResultSet(ResultSet resultSet) throws SQLException, ClassNotFoundException {
-        // ResultSet is initially before the first data set
         while (resultSet.next()) {
-            // It is possible to get the columns via name
-            // also possible to get the columns via the column number
-            // which starts at 1
-            // e.g. resultSet.getSTring(2);
             String ID = resultSet.getString("ID");
             String City = resultSet.getString("City");
             String pop = resultSet.getString("pop");
@@ -140,11 +126,8 @@ public class MySQLAccess {
     	System.out.println();
     	System.out.println("O Item de Id " + id + " é:");
 		resultSet = statement.executeQuery("SELECT c.ID, City, pop, state, loc1, loc2 FROM citys c join localizations l on c.ID = l.ID where c.ID = " + id);
+		
 		while (resultSet.next()) {
-            // It is possible to get the columns via name
-            // also possible to get the columns via the column number
-            // which starts at 1
-            // e.g. resultSet.getSTring(2);
             String ID = resultSet.getString("ID");
             String City = resultSet.getString("City");
             String pop = resultSet.getString("pop");
@@ -159,11 +142,11 @@ public class MySQLAccess {
             System.out.print("loc2: " + loc2);
             System.out.println();
         }
+        
         close();
     }
 
 
-    // You need to close the resultSet
     private void close() {
         try {
             if (resultSet != null) {
